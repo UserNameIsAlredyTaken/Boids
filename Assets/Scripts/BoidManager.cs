@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,12 +9,15 @@ public class BoidManager : MonoBehaviour {
 
     public BoidSettings settings;
     public ComputeShader compute;
+    // public Transform targetTransform;
+    [SerializeField]
+    public List<Target> targets;
     Boid[] boids;
 
     void Start () {
         boids = FindObjectsOfType<Boid> ();
         foreach (Boid b in boids) {
-            b.Initialize (settings, null);
+            b.Initialize (settings, targets);
         }
 
     }
@@ -69,5 +73,12 @@ public class BoidManager : MonoBehaviour {
                 return sizeof (float) * 3 * 5 + sizeof (int);
             }
         }
+    }
+
+    [Serializable]
+    public struct Target
+    {
+        public Transform trans;
+        public float wheight;
     }
 }
