@@ -74,11 +74,4 @@ public class BoidManager : MonoBehaviour {
             }
         }
     }
-
-    [Serializable]
-    public struct Target
-    {
-        public Transform trans;
-        public float wheight;
-    }
 }

@@ -29,14 +29,14 @@ public class Boid : MonoBehaviour {
     Material material;
     Transform cachedTransform;
     // Transform target;
-    private List<BoidManager.Target> targets;
+    private List<Target> targets;
     
     void Awake () {
         material = transform.GetComponentInChildren<MeshRenderer> ().material;
         cachedTransform = transform;
     }
 
-    public void Initialize (BoidSettings settings, List<BoidManager.Target> targets) {
+    public void Initialize (BoidSettings settings, List<Target> targets) {
         // this.target = target;
         this.targets = targets;
         this.settings = settings;
@@ -54,34 +54,40 @@ public class Boid : MonoBehaviour {
         }
     }
 
-    private BoidManager.Target GetCurrentTarget(List<BoidManager.Target> targets)
-    {
-        BoidManager.Target currentTarget = targets[0];
-        float maxWeight = 0;
-        foreach (var target in targets)
-        {
-            // float weight = target.wheight * (target.trans.position - position).magnitude; //the closer the target, the weaker  the attraction
-            float weight = target.wheight / (target.trans.position - position).magnitude; //the closer the target, the stronger the attraction
-            if (weight > maxWeight)
-            {
-                maxWeight = weight;
-                currentTarget = target;
-            }
-        }
-
-        return currentTarget;
-    }
+    // private BoidManager.Target GetCurrentTarget(List<BoidManager.Target> targets)
+    // {
+    //     BoidManager.Target currentTarget = targets[0];
+    //     float maxWeight = 0;
+    //     foreach (var target in targets)
+    //     {
+    //         float weight = target.wheight * (target.trans.position - position).magnitude; //the closer the target, the weaker  the attraction
+    //         // float weight = target.wheight / (target.trans.position - position).magnitude; //the closer the target, the stronger the attraction
+    //         if (weight > maxWeight)
+    //         {
+    //             maxWeight = weight;
+    //             currentTarget = target;
+    //         }
+    //     }
+    //
+    //     return currentTarget;
+    // }
 
     public void UpdateBoid () {
         Vector3 acceleration = Vector3.zero;
 
         if (targets != null)
         {
-            BoidManager.Target currentTarget = GetCurrentTarget(targets);
+            // BoidManager.Target currentTarget = GetCurrentTarget(targets);
 
-            Vector3 offsetToTarget = (currentTarget.trans.position - position);
-            acceleration =
-                SteerTowards(offsetToTarget) * currentTarget.wheight;
+            foreach (var target in targets)
+            {
+                float targetWeight = target.GetAcceleration(position);
+                Vector3 offsetToTarget = (target.transform.position - position);
+                acceleration += SteerTowards(offsetToTarget) * targetWeight;
+            }
+
+            // Vector3 offsetToTarget = (currentTarget.trans.position - position);
+            // acceleration = SteerTowards(offsetToTarget) * currentTarget.wheight;
         }
 
         if (numPerceivedFlockmates != 0) {
