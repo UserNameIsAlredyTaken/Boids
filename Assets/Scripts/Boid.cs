@@ -12,7 +12,8 @@ public class Boid : MonoBehaviour {
     public Vector3 position;
     [HideInInspector]
     public Vector3 forward;
-    Vector3 velocity;
+    // Vector3 velocity;
+    Vector2 velocity;
 
     // To update:
     Vector3 acceleration;
@@ -110,13 +111,15 @@ public class Boid : MonoBehaviour {
             acceleration += collisionAvoidForce;
         }
 
-        velocity += acceleration * Time.deltaTime;
+        // velocity += acceleration * Time.deltaTime;
+        velocity += new Vector2(acceleration.x, acceleration.y) * Time.deltaTime;
         float speed = velocity.magnitude;
         Vector3 dir = velocity / speed;
         speed = Mathf.Clamp (speed, settings.minSpeed, settings.maxSpeed);
         velocity = dir * speed;
 
-        cachedTransform.position += velocity * Time.deltaTime;
+        // cachedTransform.position += velocity * Time.deltaTime;
+        cachedTransform.position += new Vector3(velocity.x, velocity.y, 0) * Time.deltaTime;
         cachedTransform.forward = dir;
         position = cachedTransform.position;
         forward = dir;
@@ -145,7 +148,8 @@ public class Boid : MonoBehaviour {
     }
 
     Vector3 SteerTowards (Vector3 vector) {
-        Vector3 v = vector.normalized * settings.maxSpeed - velocity;
+        // Vector3 v = vector.normalized * settings.maxSpeed - velocity;
+        Vector3 v = vector.normalized * settings.maxSpeed - (Vector3)velocity;
         return Vector3.ClampMagnitude (v, settings.maxSteerForce);
     }
 

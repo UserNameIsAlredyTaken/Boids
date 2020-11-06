@@ -8,24 +8,33 @@ public class Target : MonoBehaviour
     [SerializeField]
     private TargetType _targetType;
     [SerializeField]
+    [Range(0,120)]
     private float _influeceRadius;
     [SerializeField]
+    [Range(-50,50)]
     private float _weight;
+
+    private float _maxWeight = 50;
 
     public float GetAcceleration(Vector3 boidPosition)
     {
         float distance = (transform.position - boidPosition).magnitude;
         if (distance > _influeceRadius) 
             return 0;
-        
+
+        float resultWeight;
         if (_targetType == TargetType.CloseAttracter)
         {
-            return _weight / distance;
+            resultWeight = _weight / distance;
         }
         else
         {
-            return _weight * distance;
+            resultWeight = _weight * Mathf.Pow(distance / 20,2);
         }
+
+        // return resultWeight;
+        // Debug.Log(Mathf.Clamp(resultWeight, -_maxWeight, _maxWeight));
+        return Mathf.Clamp(resultWeight, -_maxWeight, _maxWeight);
     }
     
     void OnDrawGizmos()
